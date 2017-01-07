@@ -58,8 +58,8 @@ function init() {
 function geom(){
     var _geom = new THREE.Geometry();
     var _step = 20;
-    for (var i = 0; i < _step; i++) {
-        var _size = 10;
+    var _size = 7;
+    for (var i = 0; i <=_step; i++) {
         var _x1 = Math.cos(THREE.Math.degToRad(i * 360 / _step)) * _size;
         var _x2 = Math.cos(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
         var _z1 = Math.sin(THREE.Math.degToRad((i) * 360 / _step)) * _size;
