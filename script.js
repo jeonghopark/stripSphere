@@ -5,8 +5,10 @@ var stats;
 var wireMesh;
 var object;
 
+
 init();
 animate();
+
 
 function init() {
     
@@ -35,8 +37,7 @@ function init() {
 
     var _norMat = new THREE.MeshBasicMaterial({color: "rgb(255, 255, 255)"});
 
-    var _geom = new THREE.Geometry();
-    _geom = geom();
+    var _geom = geom();
 
     object = new THREE.Mesh(_geom, _norMat);
 
@@ -84,6 +85,7 @@ function animate() {
     render();
     stats.update();
 }
+
 
 function render() {
     var _delta = clock.getElapsedTime() * 0.5;
