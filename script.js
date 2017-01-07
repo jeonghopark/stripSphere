@@ -4,7 +4,9 @@ var clock;
 var container;
 var stats;
 var wireMesh;
+var wireMeshS = new Array();
 var object;
+var objectS = new Array();;
 
 
 init();
@@ -41,7 +43,7 @@ function init() {
     light = new THREE.PointLight(0xffffff, 1, 50 );
     light.position.x = 0;
     light.position.y = 2;
-    light.position.z = 20;
+    light.position.z = 15;
     light.intensity = 1;
 
     controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -52,33 +54,47 @@ function init() {
         side: THREE.DoubleSide
     });
 
-    var _geom1 = geom(36, 6);
-    var _geom2 = geom(36, 6.5);
+    var gNum = 10;
 
-    object = new THREE.Mesh(_geom1, _norMat);
-    object1 = new THREE.Mesh(_geom2, _norMat);
+    var _norMatS = new Array();
+    for (var i = 0; i < gNum; i++) {
+        _norMatS[i] = new THREE.MeshLambertMaterial({
+            color: 0xffffff, 
+            shading: THREE.SmoothShading,
+            side: THREE.DoubleSide
+        });
+    }
+
+    var _geomS = new Array();
+    for (var i = 0; i < gNum; i++) {
+        _geomS[i] = geom(36, 6 + 0.5 * i);
+        objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
+    }
 
     var _wireMat = new THREE.MeshBasicMaterial({
         color: 0x00ff00,
+        opacity: 0.3,
         wireframe: true,
         transparent: true,
         overdraw: true
     });
 
-    wireMesh = new THREE.Mesh(_geom1, _wireMat);
+    for (var i = 0; i < gNum; i++) {
+        wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMat);
+    }
 
     scene.add(new THREE.AmbientLight(0x050505));
-
-    // scene.add(wireMesh);
-    scene.add(object);
-    scene.add(object1);
+    for (var i = 0; i < gNum; i++) {
+        scene.add(objectS[i]);
+        scene.add(wireMeshS[i]);
+    }
     scene.add(light);
 
 }
 
 
 function geom(_step, _size){
-    var _geom = new THREE.Geometry();
+    this._geom = new THREE.Geometry();
     this._step = _step;
     this._size = _size;
     for (var i=0; i<=_step; i+=1) {
@@ -110,8 +126,10 @@ function animate() {
 
 
 function render() {
-    var _delta = clock.getElapsedTime() * 0.5;
-    // object.rotation.x = _delta;
-    // wireMesh.rotation.x = _delta;
+    var _delta = clock.getElapsedTime() * 0.75;
+    for (var i = 0; i < objectS.length; i++) {
+        objectS[i].rotation.x = _delta * i * 0.1;
+        wireMeshS[i].rotation.x = _delta * i * 0.1;
+    }
     renderer.render(scene, camera);
 }
