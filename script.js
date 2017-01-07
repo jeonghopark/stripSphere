@@ -1,11 +1,9 @@
+var scene, camera, renderer;
 var clock;
 var container;
-var scene; 
 var stats;
-var camera;
 var wireMesh;
 var object;
-var renderer;
 
 init();
 animate();
@@ -35,6 +33,28 @@ function init() {
     stats = new Stats();
     container.appendChild(stats.dom);
 
+    var _norMat = new THREE.MeshBasicMaterial({color: "rgb(255, 255, 255)"});
+
+    var _geom = new THREE.Geometry();
+    _geom = geom();
+
+    object = new THREE.Mesh(_geom, _norMat);
+
+    var _wireMat = new THREE.MeshBasicMaterial({
+        color: "rgb(0,255,0)",
+        wireframe: true,
+        transparent: true,
+        overdraw: true
+    });
+
+    wireMesh = new THREE.Mesh(_geom, _wireMat);
+
+    scene.add(wireMesh);
+    scene.add(object);
+}
+
+
+function geom(){
     var _geom = new THREE.Geometry();
     var _step = 20;
     for (var i = 0; i < _step; i++) {
@@ -55,22 +75,7 @@ function init() {
         _geom.faces.push(new THREE.Face3(i + 3, i, i + 1));
         _geom.computeFaceNormals();
     }
-
-    var _norMat = new THREE.MeshBasicMaterial({color: "rgb(255, 255, 255)"});
-
-    object = new THREE.Mesh(_geom, _norMat);
-
-    var _wireMat = new THREE.MeshBasicMaterial({
-        color: "rgb(0,255,0)",
-        wireframe: true,
-        transparent: true,
-        overdraw: true
-    });
-
-    wireMesh = new THREE.Mesh(_geom, _wireMat);
-
-    scene.add(wireMesh);
-    scene.add(object);
+    return _geom
 }
 
 
