@@ -59,7 +59,7 @@ function geom(){
     var _geom = new THREE.Geometry();
     var _step = 20;
     var _size = 7;
-    for (var i = 0; i <=_step; i++) {
+    for (var i=0; i<=_step; i+=1) {
         var _x1 = Math.cos(THREE.Math.degToRad(i * 360 / _step)) * _size;
         var _x2 = Math.cos(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
         var _z1 = Math.sin(THREE.Math.degToRad((i) * 360 / _step)) * _size;
@@ -71,7 +71,7 @@ function geom(){
         _geom.vertices.push(v2);
         _geom.vertices.push(v3);
     }
-    for (var i = 0; i < _geom.vertices.length - 3; i += 3) {
+    for (var i=0; i<_geom.vertices.length - 3; i+=3) {
         _geom.faces.push(new THREE.Face3(i + 1, i, i + 2));
         _geom.faces.push(new THREE.Face3(i + 3, i, i + 1));
         _geom.computeFaceNormals();
