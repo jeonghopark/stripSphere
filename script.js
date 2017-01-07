@@ -1,4 +1,5 @@
 var scene, camera, renderer;
+var controls;
 var clock;
 var container;
 var stats;
@@ -34,6 +35,8 @@ function init() {
 
     stats = new Stats();
     container.appendChild(stats.dom);
+
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
 
     var _norMat = new THREE.MeshBasicMaterial({color: "rgb(255, 255, 255)"});
 
@@ -89,7 +92,7 @@ function animate() {
 
 function render() {
     var _delta = clock.getElapsedTime() * 0.5;
-    object.rotation.x = _delta;
-    wireMesh.rotation.x = _delta;
+    // object.rotation.x = _delta;
+    // wireMesh.rotation.x = _delta;
     renderer.render(scene, camera);
 }
