@@ -7,7 +7,24 @@
 
     <style>
         body {
-            margin: 0
+            background-color: #D0AD99;
+                        
+            /* Safari 4, Chrome 1-9, iOS 3.2-4.3, Android 2.1-3.0 */
+            background-image: -webkit-gradient(linear, left top, right top, from(#FFDC96), to(#FEF8D1));
+            
+            /* Safari 5.1, iOS 5.0-6.1, Chrome 10-25, Android 4.0-4.3 */
+            background-image: -webkit-linear-gradient(left, #FFDC96, #FEF8D1);
+            
+            /* Firefox 3.6 - 15 */
+            background-image: -moz-linear-gradient(left, #FFDC96, #FEF8D1);
+            
+            /* Opera 11.1 - 12 */
+            background-image: -o-linear-gradient(left, #FFDC96, #FEF8D1);
+            
+            /* Opera 15+, Chrome 25+, IE 10+, Firefox 16+, Safari 6.1+, iOS 7+, Android 4.4+ */
+            background-image: linear-gradient(to top, #FFDC96, #FEF8D1);
+            margin: 0px;
+            overflow: hidden;
         }
         
         canvas {
@@ -16,17 +33,16 @@
         }
     </style>
 
-    <script type="text/javascript" src="js/three.js"></script>
+    <script type="text/javascript" src="js/three.min.js"></script>
     <script type="text/javascript" src="js/libs/stats.min.js"></script>
-    <script trpe="text/javascript" src="js/libs/OrbitControls.js"></script>
-    <script trpe="text/javascript" src="js/libs/CanvasRenderer.js"></script>
-    <script trpe="text/javascript" src="js/libs/Projector.js"></script>
+    <script trpe="text/javascript" src="js/libs/TrackballControls.js"></script>
+    <script trpe="text/javascript" src="js/libs/Detector.js"></script>
+    
 
     <body>
 
         <div id="container"></div>
         <script src="script.js"></script>
-
 
     </body>
 
