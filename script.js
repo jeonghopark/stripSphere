@@ -8,6 +8,7 @@ var wireMeshS = new Array();
 var object;
 var objectS = new Array();;
 
+var gNum = 20;
 
 init();
 animate();
@@ -54,7 +55,6 @@ function init() {
         side: THREE.DoubleSide
     });
 
-    var gNum = 10;
 
     var _norMatS = new Array();
     for (var i = 0; i < gNum; i++) {
@@ -67,7 +67,7 @@ function init() {
 
     var _geomS = new Array();
     for (var i = 0; i < gNum; i++) {
-        _geomS[i] = geom(36, 6 + 0.5 * i);
+        _geomS[i] = geom(36, 6 + 0.1 * i);
         objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
     }
 
@@ -97,14 +97,15 @@ function geom(_step, _size){
     this._geom = new THREE.Geometry();
     this._step = _step;
     this._size = _size;
+    this._ySize = 1.5;
     for (var i=0; i<=_step; i+=1) {
         var _x1 = Math.cos(THREE.Math.degToRad(i * 360 / _step)) * _size;
         var _x2 = Math.cos(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
         var _z1 = Math.sin(THREE.Math.degToRad((i) * 360 / _step)) * _size;
         var _z2 = Math.sin(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
-        var v1 = new THREE.Vector3(_x1, 0, _z1);
-        var v2 = new THREE.Vector3(_x2, 1, _z2);
-        var v3 = new THREE.Vector3(_x1, 1, _z1);
+        var v1 = new THREE.Vector3(_x1, -_ySize * 0.5, _z1);
+        var v2 = new THREE.Vector3(_x2, _ySize * 0.5, _z2);
+        var v3 = new THREE.Vector3(_x1, _ySize * 0.5, _z1);
         _geom.vertices.push(v1);
         _geom.vertices.push(v2);
         _geom.vertices.push(v3);
@@ -126,8 +127,8 @@ function animate() {
 
 
 function render() {
-    var _delta = clock.getElapsedTime() * 0.75;
-    for (var i = 0; i < objectS.length; i++) {
+    var _delta = clock.getElapsedTime() * 0.8;
+    for (var i = 0; i < gNum; i++) {
         objectS[i].rotation.x = _delta * i * 0.1;
         wireMeshS[i].rotation.x = _delta * i * 0.1;
     }
