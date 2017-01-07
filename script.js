@@ -1,4 +1,4 @@
-var scene, camera, renderer;
+var scene, camera, renderer, light;
 var controls;
 var clock;
 var container;
@@ -24,7 +24,9 @@ function init() {
     camera.position.z = 20;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({
+        antialias: true
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.domElement.style.position = "relative";
     renderer.gammaInput = true;
@@ -36,32 +38,49 @@ function init() {
     stats = new Stats();
     container.appendChild(stats.dom);
 
+    light = new THREE.PointLight(0xffffff, 1, 50 );
+    light.position.x = 0;
+    light.position.y = 2;
+    light.position.z = 20;
+    light.intensity = 1;
+
     controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-    var _norMat = new THREE.MeshBasicMaterial({color: "rgb(255, 255, 255)"});
+    var _norMat = new THREE.MeshLambertMaterial({
+        color: 0xffffff, 
+        shading: THREE.SmoothShading,
+        side: THREE.DoubleSide
+    });
 
-    var _geom = geom();
+    var _geom1 = geom(36, 6);
+    var _geom2 = geom(36, 6.5);
 
-    object = new THREE.Mesh(_geom, _norMat);
+    object = new THREE.Mesh(_geom1, _norMat);
+    object1 = new THREE.Mesh(_geom2, _norMat);
 
     var _wireMat = new THREE.MeshBasicMaterial({
-        color: "rgb(0,255,0)",
+        color: 0x00ff00,
         wireframe: true,
         transparent: true,
         overdraw: true
     });
 
-    wireMesh = new THREE.Mesh(_geom, _wireMat);
+    wireMesh = new THREE.Mesh(_geom1, _wireMat);
 
-    scene.add(wireMesh);
+    scene.add(new THREE.AmbientLight(0x050505));
+
+    // scene.add(wireMesh);
     scene.add(object);
+    scene.add(object1);
+    scene.add(light);
+
 }
 
 
-function geom(){
+function geom(_step, _size){
     var _geom = new THREE.Geometry();
-    var _step = 20;
-    var _size = 7;
+    this._step = _step;
+    this._size = _size;
     for (var i=0; i<=_step; i+=1) {
         var _x1 = Math.cos(THREE.Math.degToRad(i * 360 / _step)) * _size;
         var _x2 = Math.cos(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
