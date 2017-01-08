@@ -1,4 +1,4 @@
-var scene, camera, renderer, light;
+var scene, camera, renderer, light, gui
 var controls;
 var clock;
 var container;
@@ -9,23 +9,25 @@ var object;
 var objectS = new Array();;
 
 var gNum = 40;
+var parameters;
 
 init();
 animate();
 
 
 function init() {
-    
-    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+    if (!Detector.webgl) Detector.addGetWebGLMessage();
 
     clock = new THREE.Clock();
+    clock.start();
 
     container = document.getElementById('container');
 
     scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0xFFEAB0 );
     // scene.fog = new THREE.FogExp2( 0xcccccc, 0.01 ); //https://threejs.org/examples/#misc_controls_trackball
-    
+
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 25;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -35,29 +37,30 @@ function init() {
         alpha: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.domElement.style.position = "relative";
+    // renderer.domElement.style.position = "relative";
     // renderer.gammaInput = true;
     // renderer.gammaOutput = true;
-    renderer.setClearColor( 0x000000, 0.0);
+    renderer.setClearColor(0x000000, 0.0);
 
-    container.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
+    // container.appendChild(renderer.domElement);
 
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    light = new THREE.PointLight(0xffffff, 1, 50 );
+    light = new THREE.PointLight(0xffffff, 1, 50);
     light.position.x = 0;
     light.position.y = 2;
     light.position.z = 15;
     light.intensity = 1;
 
-    lightIn = new THREE.PointLight(0xFEF8D1, 1, 10 );
+    lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
     lightIn.position.x = 0;
     lightIn.position.y = 0;
     lightIn.position.z = 0;
     lightIn.intensity = 1;
 
-    controls = new THREE.TrackballControls( camera );
+    controls = new THREE.TrackballControls(camera, renderer.domElement);
     controls.rotateSpeed = 3.0;
     controls.zoomSpeed = 1.2;
     controls.panSpeed = 0.8;
@@ -65,19 +68,18 @@ function init() {
     controls.noPan = false;
     controls.staticMoving = true;
     controls.dynamicDampingFactor = 0.3;
-    // controls.keys = [ 65, 83, 68 ];
-    controls.addEventListener( 'change', render );
-        
+
+
     var _norMat = new THREE.MeshLambertMaterial({
-        color: 0xffffff, 
+        color: 0xffffff,
         shading: THREE.SmoothShading,
         side: THREE.FrontSide
     });
 
     var _norMatS = new Array();
-    for (var i=0; i<gNum; i+=1) {
+    for (var i = 0; i < gNum; i += 1) {
         _norMatS[i] = new THREE.MeshLambertMaterial({
-            color: 0xffffff, 
+            color: 0xffffff,
             opacity: 0.75,
             transparent: true,
             shading: THREE.SmoothShading,
@@ -86,8 +88,8 @@ function init() {
     }
 
     var _geomS = new Array();
-    for (var i=0; i<gNum; i+=1) {
-        _geomS[i] = geom(36, 6 + 0.12 * i);
+    for (var i = 0; i < gNum; i += 1) {
+        _geomS[i] = geom(36, 6 + 0.12 * i, 1.0);
         objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
     }
 
@@ -99,12 +101,12 @@ function init() {
         overdraw: true
     });
 
-    for (var i=0; i<gNum; i+=1) {
+    for (var i = 0; i < gNum; i += 1) {
         wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMat);
     }
 
     scene.add(new THREE.AmbientLight(0x330505));
-    for (var i=0; i<gNum; i+=1) {
+    for (var i = 0; i < gNum; i += 1) {
         scene.add(objectS[i]);
         // scene.add(wireMeshS[i]);
     }
@@ -112,15 +114,43 @@ function init() {
     scene.add(light);
     scene.add(lightIn);
 
+
+    gui = new dat.GUI({
+        height: 0
+    });
+    parameters = {
+        StripWidth: 1.0,
+        Speed: 1.0
+    }
+    var stripWidth = gui.add(parameters, 'StripWidth').min(0.2).max(3.0).step(0.1).listen();
+    var speed = gui.add(parameters, 'Speed').min(0.0).max(2.0).step(0.1).listen();
+    stripWidth.onChange(function() {
+        var _geomS = new Array();
+        for (var i = 0; i < gNum; i += 1) {
+            scene.remove(objectS[i]);
+            _geomS[i] = geom(36, 6 + 0.12 * i, parameters.StripWidth);
+            objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
+            scene.add(objectS[i]);
+        }
+    });
+
+    speed.onChange(function() {
+
+    });
+
+
+    gui.open();
 }
 
 
-function geom(_step, _size){
+
+
+function geom(_step, _size, stripWidth) {
     this._geom = new THREE.Geometry();
     this._step = _step;
     this._size = _size;
-    this._ySize = 1.0;
-    for (var i=0; i<=_step; i+=1) {
+    this._ySize = stripWidth;
+    for (var i = 0; i <= _step; i += 1) {
         var _x1 = Math.cos(THREE.Math.degToRad(i * 360 / _step)) * _size;
         var _x2 = Math.cos(THREE.Math.degToRad((i + 1) * 360 / _step)) * _size;
         var _z1 = Math.sin(THREE.Math.degToRad((i) * 360 / _step)) * _size;
@@ -132,7 +162,7 @@ function geom(_step, _size){
         _geom.vertices.push(v2);
         _geom.vertices.push(v3);
     }
-    for (var i=0; i<_geom.vertices.length - 3; i+=3) {
+    for (var i = 0; i < _geom.vertices.length - 3; i += 3) {
         _geom.faces.push(new THREE.Face3(i + 1, i, i + 2));
         _geom.faces.push(new THREE.Face3(i + 3, i, i + 1));
         _geom.computeFaceNormals();
@@ -150,13 +180,22 @@ function animate() {
 
 
 function render() {
-    var _delta = clock.getElapsedTime() * 0.05;
+    var _delta = Math.PI * counter() * 0.05 / 180.0;
     var _followIndex = 20;
-    for (var i=0; i<gNum; i+=1) {
+    for (var i = 0; i < gNum; i += 1) {
         objectS[i].rotation.y = Math.PI;
         objectS[i].rotation.z = Math.PI * 0.25;
         objectS[i].rotation.x = _delta * (i + _followIndex);
         wireMeshS[i].rotation.x = _delta * (i + _followIndex);
     }
     renderer.render(scene, camera);
+}
+
+
+
+function counter() {
+    if (clock.running) {
+        counter.count = counter.count + 1.0 * parameters.Speed || 0;
+    }
+    return counter.count;
 }
