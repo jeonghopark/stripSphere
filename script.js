@@ -25,7 +25,7 @@ function init() {
     scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0xFFEAB0 );
     // scene.fog = new THREE.FogExp2( 0xcccccc, 0.01 ); //https://threejs.org/examples/#misc_controls_trackball
-
+    
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 25;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -57,7 +57,6 @@ function init() {
     lightIn.position.z = 0;
     lightIn.intensity = 1;
 
-
     controls = new THREE.TrackballControls( camera );
     controls.rotateSpeed = 3.0;
     controls.zoomSpeed = 1.2;
@@ -68,7 +67,6 @@ function init() {
     controls.dynamicDampingFactor = 0.3;
     // controls.keys = [ 65, 83, 68 ];
     controls.addEventListener( 'change', render );
-    
         
     var _norMat = new THREE.MeshLambertMaterial({
         color: 0xffffff, 
@@ -76,9 +74,8 @@ function init() {
         side: THREE.FrontSide
     });
 
-
     var _norMatS = new Array();
-    for (var i = 0; i < gNum; i++) {
+    for (var i=0; i<gNum; i+=1) {
         _norMatS[i] = new THREE.MeshLambertMaterial({
             color: 0xffffff, 
             opacity: 0.75,
@@ -89,7 +86,7 @@ function init() {
     }
 
     var _geomS = new Array();
-    for (var i = 0; i < gNum; i++) {
+    for (var i=0; i<gNum; i+=1) {
         _geomS[i] = geom(36, 6 + 0.12 * i);
         objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
     }
@@ -102,12 +99,12 @@ function init() {
         overdraw: true
     });
 
-    for (var i = 0; i < gNum; i++) {
+    for (var i=0; i<gNum; i+=1) {
         wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMat);
     }
 
     scene.add(new THREE.AmbientLight(0x330505));
-    for (var i = 0; i < gNum; i++) {
+    for (var i=0; i<gNum; i+=1) {
         scene.add(objectS[i]);
         // scene.add(wireMeshS[i]);
     }
@@ -153,12 +150,13 @@ function animate() {
 
 
 function render() {
-    var _delta = clock.getElapsedTime() * 0.8;
-    for (var i = 0; i < gNum; i++) {
+    var _delta = clock.getElapsedTime() * 0.05;
+    var _followIndex = 20;
+    for (var i=0; i<gNum; i+=1) {
         objectS[i].rotation.y = Math.PI;
         objectS[i].rotation.z = Math.PI * 0.25;
-        objectS[i].rotation.x = _delta * (i + 5) * 0.1;
-        wireMeshS[i].rotation.x = _delta * (i + 5) * 0.1;
+        objectS[i].rotation.x = _delta * (i + _followIndex);
+        wireMeshS[i].rotation.x = _delta * (i + _followIndex);
     }
     renderer.render(scene, camera);
 }
