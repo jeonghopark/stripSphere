@@ -70,17 +70,11 @@ function init() {
     controls.dynamicDampingFactor = 0.3;
 
 
-    var _norMat = new THREE.MeshLambertMaterial({
-        color: 0xffffff,
-        shading: THREE.SmoothShading,
-        side: THREE.FrontSide
-    });
-
     var _norMatS = new Array();
     for (var i = 0; i < gNum; i += 1) {
         _norMatS[i] = new THREE.MeshLambertMaterial({
             color: 0xffffff,
-            opacity: 0.75,
+            opacity: 0.85,
             transparent: true,
             shading: THREE.SmoothShading,
             side: THREE.DoubleSide
@@ -93,16 +87,15 @@ function init() {
         objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
     }
 
-    var _wireMat = new THREE.MeshBasicMaterial({
+    var _wireMatE = new THREE.MeshBasicMaterial({
         color: 0x00ff00,
         opacity: 0.3,
         wireframe: true,
         transparent: true,
         overdraw: true
     });
-
     for (var i = 0; i < gNum; i += 1) {
-        wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMat);
+        wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMatE);
     }
 
     scene.add(new THREE.AmbientLight(0x330505));
@@ -111,19 +104,17 @@ function init() {
         // scene.add(wireMeshS[i]);
     }
 
-    scene.add(light);
-    scene.add(lightIn);
-
-
     gui = new dat.GUI({
         height: 0
     });
     parameters = {
         StripWidth: 1.0,
-        Speed: 1.0
+        Speed: 0.7,
+        RotationY: 45,
+        RotationZ: 25
     }
     var stripWidth = gui.add(parameters, 'StripWidth').min(0.2).max(3.0).step(0.1).listen();
-    var speed = gui.add(parameters, 'Speed').min(0.0).max(2.0).step(0.1).listen();
+    gui.add(parameters, 'Speed').min(0.0).max(1.0).step(0.1).listen();
     stripWidth.onChange(function() {
         var _geomS = new Array();
         for (var i = 0; i < gNum; i += 1) {
@@ -133,16 +124,11 @@ function init() {
             scene.add(objectS[i]);
         }
     });
+    
+    scene.add(light);
+    scene.add(lightIn);
 
-    speed.onChange(function() {
-
-    });
-
-
-    gui.open();
 }
-
-
 
 
 function geom(_step, _size, stripWidth) {
@@ -186,6 +172,8 @@ function render() {
         objectS[i].rotation.y = Math.PI;
         objectS[i].rotation.z = Math.PI * 0.25;
         objectS[i].rotation.x = _delta * (i + _followIndex);
+        wireMeshS[i].rotation.y = Math.PI;
+        wireMeshS[i].rotation.z = Math.PI * 0.25;
         wireMeshS[i].rotation.x = _delta * (i + _followIndex);
     }
     renderer.render(scene, camera);
@@ -195,7 +183,7 @@ function render() {
 
 function counter() {
     if (clock.running) {
-        counter.count = counter.count + 1.0 * parameters.Speed || 0;
+        counter.count = counter.count + (1.0 * parameters.Speed) || 1;
     }
     return counter.count;
 }
