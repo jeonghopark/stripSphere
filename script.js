@@ -38,7 +38,7 @@ function init() {
     renderer.domElement.style.position = "relative";
     // renderer.gammaInput = true;
     // renderer.gammaOutput = true;
-    // renderer.setClearColor( 0x00ff00, 0);
+    renderer.setClearColor( 0x000000, 0.0);
 
     container.appendChild(renderer.domElement);
 
