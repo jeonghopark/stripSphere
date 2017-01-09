@@ -1,11 +1,8 @@
-var scene, camera, renderer, light, gui
-var controls;
+var scene, camera, renderer, light, gui, controls;
 var clock;
 var container;
 var stats;
-var wireMesh;
 var wireMeshS = new Array();
-var object;
 var objectS = new Array();;
 
 var gNum = 40;
@@ -23,7 +20,6 @@ function init() {
     clock = new THREE.Clock();
     clock.start();
 
-    container = document.getElementById('container');
 
     scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0xFFEAB0 );
@@ -44,10 +40,10 @@ function init() {
     // renderer.gammaOutput = true;
     renderer.setClearColor(0x000000, 0.0);
 
-    document.body.appendChild(renderer.domElement);
-    // container.appendChild(renderer.domElement);
-
     stats = new Stats();
+
+    container = document.getElementById('container');
+    document.body.appendChild(renderer.domElement);
     container.appendChild(stats.dom);
 
     lightSetting();
@@ -92,7 +88,7 @@ function init() {
     });
     parameters = {
         StripWidth: 1.0,
-        Speed: 0.7,
+        Speed: 0.5,
         RotationY: 45,
         RotationZ: 25
     }
