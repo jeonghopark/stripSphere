@@ -15,6 +15,7 @@ init();
 animate();
 
 
+//-----------------------------------------------------------------------------
 function init() {
 
     if (!Detector.webgl) Detector.addGetWebGLMessage();
@@ -27,6 +28,7 @@ function init() {
     scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0xFFEAB0 );
     // scene.fog = new THREE.FogExp2( 0xcccccc, 0.01 ); //https://threejs.org/examples/#misc_controls_trackball
+    scene.add(new THREE.AmbientLight(0x330505));
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 25;
@@ -48,27 +50,9 @@ function init() {
     stats = new Stats();
     container.appendChild(stats.dom);
 
-    light = new THREE.PointLight(0xffffff, 1, 50);
-    light.position.x = 0;
-    light.position.y = 2;
-    light.position.z = 15;
-    light.intensity = 1;
+    lightSetting();
 
-    lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
-    lightIn.position.x = 0;
-    lightIn.position.y = 0;
-    lightIn.position.z = 0;
-    lightIn.intensity = 1;
-
-    controls = new THREE.TrackballControls(camera, renderer.domElement);
-    controls.rotateSpeed = 3.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
-
+    controlsSetting();
 
     var _norMatS = new Array();
     for (var i = 0; i < gNum; i += 1) {
@@ -98,7 +82,6 @@ function init() {
         wireMeshS[i] = new THREE.Mesh(_geomS[i], _wireMatE);
     }
 
-    scene.add(new THREE.AmbientLight(0x330505));
     for (var i = 0; i < gNum; i += 1) {
         scene.add(objectS[i]);
         // scene.add(wireMeshS[i]);
@@ -125,12 +108,11 @@ function init() {
         }
     });
     
-    scene.add(light);
-    scene.add(lightIn);
 
 }
 
 
+//-----------------------------------------------------------------------------
 function geom(_step, _size, stripWidth) {
     this._geom = new THREE.Geometry();
     this._step = _step;
@@ -157,6 +139,7 @@ function geom(_step, _size, stripWidth) {
 }
 
 
+//-----------------------------------------------------------------------------
 function animate() {
     requestAnimationFrame(animate);
     render();
@@ -165,6 +148,7 @@ function animate() {
 }
 
 
+//-----------------------------------------------------------------------------
 function render() {
     var _delta = Math.PI * counter() * 0.05 / 180.0;
     var _followIndex = 20;
@@ -180,10 +164,42 @@ function render() {
 }
 
 
-
+//-----------------------------------------------------------------------------
 function counter() {
     if (clock.running) {
         counter.count = counter.count + (1.0 * parameters.Speed) || 1;
     }
     return counter.count;
+}
+
+
+//-----------------------------------------------------------------------------
+function lightSetting(){
+    light = new THREE.PointLight(0xffffff, 1, 50);
+    light.position.x = 0;
+    light.position.y = 2;
+    light.position.z = 15;
+    light.intensity = 1;
+
+    lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
+    lightIn.position.x = 0;
+    lightIn.position.y = 0;
+    lightIn.position.z = 0;
+    lightIn.intensity = 1;    
+    
+    scene.add(light);
+    scene.add(lightIn);
+}
+
+
+//-----------------------------------------------------------------------------
+function controlsSetting(){
+    controls = new THREE.TrackballControls(camera, renderer.domElement);
+    controls.rotateSpeed = 3.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.noZoom = false;
+    controls.noPan = false;
+    controls.staticMoving = true;
+    controls.dynamicDampingFactor = 0.3;
 }
