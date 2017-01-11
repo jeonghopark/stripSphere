@@ -1,11 +1,8 @@
-var scene, camera, renderer, light, gui, controls;
-var clock;
-var container;
+var scene, camera, renderer, controls;
 var stats;
 var wireMeshS = new Array();
 var objectS = new Array();;
 
-var gNum = 40;
 var parameters;
 
 init();
@@ -24,7 +21,7 @@ function init() {
         RotationZ: 25
     }
 
-    clock = new THREE.Clock();
+    var clock = new THREE.Clock();
     clock.start();
 
     scene = new THREE.Scene();
@@ -47,9 +44,9 @@ function init() {
 
     stats = new Stats();
 
-    container = document.getElementById('container');
+    var _container = document.getElementById('container');
     document.body.appendChild(renderer.domElement);
-    container.appendChild(stats.dom);
+    _container.appendChild(stats.dom);
 
     lightSetting(scene);
     controlsSetting(renderer);
@@ -65,7 +62,7 @@ function init() {
 
 //-----------------------------------------------------------------------------
 function geoMeshSetting() {
-
+    this._gNum = 40;
     var _wireMatE = new THREE.MeshBasicMaterial({
         color: 0x00ff00,
         opacity: 0.3,
@@ -75,7 +72,7 @@ function geoMeshSetting() {
     });
 
     var _norMatS = new Array();
-    for (var i = 0; i < gNum; i += 1) {
+    for (var i = 0; i < _gNum; i += 1) {
         _norMatS[i] = new THREE.MeshLambertMaterial({
             color: 0xffffff,
             opacity: 0.85,
@@ -86,7 +83,7 @@ function geoMeshSetting() {
     }
 
     var _geomS = new Array();
-    for (var i = 0; i < gNum; i += 1) {
+    for (var i = 0; i < _gNum; i += 1) {
         scene.remove(objectS[i]);
         _geomS[i] = geom(36, 6 + 0.12 * i);
         objectS[i] = new THREE.Mesh(_geomS[i], _norMatS[i]);
@@ -97,6 +94,20 @@ function geoMeshSetting() {
 
 }
 
+
+//-----------------------------------------------------------------------------
+function geoMeshUpdate() {
+    var _delta = Math.PI * counter() * 0.05 / 180.0;
+    var _followIndex = 20;
+    for (var i = 0; i < objectS.length; i += 1) {
+        objectS[i].rotation.y = Math.PI;
+        objectS[i].rotation.z = Math.PI * 0.25;
+        objectS[i].rotation.x = _delta * (i + _followIndex);
+        wireMeshS[i].rotation.y = Math.PI;
+        wireMeshS[i].rotation.z = Math.PI * 0.25;
+        wireMeshS[i].rotation.x = _delta * (i + _followIndex);
+    }
+}
 
 
 //-----------------------------------------------------------------------------
@@ -138,45 +149,28 @@ function animate() {
 
 //-----------------------------------------------------------------------------
 function render() {
-
-    var _delta = Math.PI * counter() * 0.05 / 180.0;
-    var _followIndex = 20;
-    for (var i = 0; i < gNum; i += 1) {
-        objectS[i].rotation.y = Math.PI;
-        objectS[i].rotation.z = Math.PI * 0.25;
-        objectS[i].rotation.x = _delta * (i + _followIndex);
-        wireMeshS[i].rotation.y = Math.PI;
-        wireMeshS[i].rotation.z = Math.PI * 0.25;
-        wireMeshS[i].rotation.x = _delta * (i + _followIndex);
-    }
-
+    geoMeshUpdate();
     renderer.render(scene, camera);
 }
 
 
 //-----------------------------------------------------------------------------
 function counter() {
-    if (clock.running) {
-        counter.count = counter.count + (1.0 * parameters.Speed) || 1;
-    } else {
-        counter.count = 1;
-    }
+    counter.count = counter.count + (1.0 * parameters.Speed) || 1;
     return counter.count;
 }
 
 
-
-
-
 //-----------------------------------------------------------------------------
 function lightSetting(_scene) {
-    light = new THREE.PointLight(0xffffff, 1, 50);
+    this._scene = _scene;
+    var light = new THREE.PointLight(0xffffff, 1, 50);
     light.position.x = 0;
     light.position.y = 2;
     light.position.z = 15;
     light.intensity = 1;
 
-    lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
+    var lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
     lightIn.position.x = 0;
     lightIn.position.y = 0;
     lightIn.position.z = 0;
@@ -190,6 +184,7 @@ function lightSetting(_scene) {
 
 //-----------------------------------------------------------------------------
 function controlsSetting(_renderer) {
+    this._renderer = _renderer;
     controls = new THREE.TrackballControls(camera, _renderer.domElement);
     controls.rotateSpeed = 3.0;
     controls.zoomSpeed = 1.2;
@@ -203,7 +198,7 @@ function controlsSetting(_renderer) {
 
 //-----------------------------------------------------------------------------
 function guiSetting() {
-    gui = new dat.GUI();
+    var gui = new dat.GUI();
 
     gui.add(parameters, 'Speed').min(0.0).max(1.0).step(0.1).listen();
 
