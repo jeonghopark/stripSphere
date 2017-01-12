@@ -48,8 +48,8 @@ function init() {
     document.body.appendChild(renderer.domElement);
     _container.appendChild(stats.dom);
 
-    lightSetting(scene);
-    controlsSetting(renderer);
+    lightSetting();
+    controlsSetting();
 
     geoMeshSetting();
 
@@ -162,30 +162,26 @@ function counter() {
 
 
 //-----------------------------------------------------------------------------
-function lightSetting(_scene) {
-    this._scene = _scene;
+function lightSetting() {
     var light = new THREE.PointLight(0xffffff, 1, 50);
-    light.position.x = 0;
-    light.position.y = 2;
-    light.position.z = 15;
+    var _vLight = new THREE.Vector3(0, 2, 15);
+    light.position.set(_vLight.x, _vLight.y, _vLight.z);
     light.intensity = 1;
 
     var lightIn = new THREE.PointLight(0xFEF8D1, 1, 10);
-    lightIn.position.x = 0;
-    lightIn.position.y = 0;
-    lightIn.position.z = 0;
+    var _vLightIn = new THREE.Vector3(0, 2, 15);
+    lightIn.position.set(_vLightIn.x, _vLightIn.y, _vLightIn.z);
     lightIn.intensity = 1;
 
-    _scene.add(light);
-    _scene.add(lightIn);
-    _scene.add(new THREE.AmbientLight(0x333355));
+    scene.add(light);
+    scene.add(lightIn);
+    scene.add(new THREE.AmbientLight(0x333355));
 }
 
 
 //-----------------------------------------------------------------------------
-function controlsSetting(_renderer) {
-    this._renderer = _renderer;
-    controls = new THREE.TrackballControls(camera, _renderer.domElement);
+function controlsSetting() {
+    controls = new THREE.TrackballControls(camera, renderer.domElement);
     controls.rotateSpeed = 3.0;
     controls.zoomSpeed = 1.2;
     controls.panSpeed = 0.8;
